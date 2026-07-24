@@ -1,13 +1,10 @@
 """Real test demonstration script for Sentinel AI runtime engine."""
 
-import sys
-from typing import Any, Dict
-
 from sentinel_ai.agents.triage import TriageAgent
 from sentinel_ai.audit.logger import CryptographicAuditLogger
 from sentinel_ai.exceptions import PolicyViolationError
-from sentinel_ai.ingress.webhook import WebhookAdapter
 from sentinel_ai.ingestion.engine import IngestionEngine
+from sentinel_ai.ingress.webhook import WebhookAdapter
 from sentinel_ai.security.pep import PolicyEnforcementPoint
 
 
