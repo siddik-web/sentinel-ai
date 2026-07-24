@@ -1,0 +1,14 @@
+{
+  "scenario_name": "Routine CloudAPI Call",
+  "expected_severity": "INFORMATIONAL",
+  "expected_hitl": false,
+  "expected_action": null,
+  "raw_payload": {
+    "class_uid": 3002,
+    "activity_id": 2,
+    "severity_id": 1,
+    "user_name": "service_account",
+    "is_success": true,
+    "product_name": "AWS CloudTrail"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "scenario_name": "Ransomware Execution & Encrypted Write Spike",
+  "expected_severity": "CRITICAL",
+  "expected_hitl": true,
+  "expected_action": "ISOLATE_HOST",
+  "raw_payload": {
+    "class_uid": 2001,
+    "activity_id": 99,
+    "severity_id": 5,
+    "title": "Ransomware Activity Detected",
+    "analytic_name": "EDR-BEHAVIORAL",
+    "confidence_score": 0.98,
+    "product_name": "CrowdStrike"
+  }
+}

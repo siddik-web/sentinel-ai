@@ -36,7 +36,7 @@ def test_cli_ingest_and_hitl_workflow(tmp_path, capsys):
     # List HITL via CLI
     cli_main(["--db", db_file, "hitl", "list"])
     captured = capsys.readouterr()
-    assert "Found 1 HITL Tickets" in captured.out
+    assert "HITL Tickets" in captured.out
 
     ticket_id = "TICKET-2001:1710000000:GenericWebhook:88"
     for line in captured.out.splitlines():

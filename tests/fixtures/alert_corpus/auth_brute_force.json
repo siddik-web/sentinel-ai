@@ -1,0 +1,14 @@
+{
+  "scenario_name": "Authentication Brute Force Spike",
+  "expected_severity": "MEDIUM",
+  "expected_hitl": true,
+  "expected_action": "REVOKE_CREDENTIALS",
+  "raw_payload": {
+    "class_uid": 3002,
+    "activity_id": 1,
+    "severity_id": 4,
+    "user_name": "target_admin",
+    "is_success": false,
+    "product_name": "Okta"
+  }
+}
