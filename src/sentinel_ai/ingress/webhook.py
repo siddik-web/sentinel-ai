@@ -7,6 +7,7 @@ from pydantic import ValidationError
 
 from sentinel_ai.core.ocsf.models import (
     AuthenticationEvent,
+    CategoryUID,
     ClassUID,
     FindingEvent,
     NetworkActivityEvent,
@@ -45,13 +46,25 @@ class WebhookAdapter(DataSourceAdapter):
             if "time" not in event_data:
                 event_data["time"] = int(time.time())
 
-            if class_uid_val == ClassUID.AUTHENTICATION or class_uid_val == 3002:
+            if "category_uid" not in event_data:
+                if class_uid_val in (ClassUID.AUTHENTICATION, 3002):
+                    event_data["category_uid"] = CategoryUID.IDENTITY_MANAGEMENT
+                elif class_uid_val in (ClassUID.NETWORK_ACTIVITY, 4001):
+                    event_data["category_uid"] = CategoryUID.NETWORK_ACTIVITY
+                elif class_uid_val in (ClassUID.PROCESS_ACTIVITY, 1007):
+                    event_data["category_uid"] = CategoryUID.SYSTEM_ACTIVITY
+                elif class_uid_val in (ClassUID.FINDING, 2001):
+                    event_data["category_uid"] = CategoryUID.FINDINGS
+                else:
+                    event_data["category_uid"] = CategoryUID.SYSTEM_ACTIVITY
+
+            if class_uid_val in (ClassUID.AUTHENTICATION, 3002):
                 return AuthenticationEvent(**event_data)
-            elif class_uid_val == ClassUID.NETWORK_ACTIVITY or class_uid_val == 4001:
+            elif class_uid_val in (ClassUID.NETWORK_ACTIVITY, 4001):
                 return NetworkActivityEvent(**event_data)
-            elif class_uid_val == ClassUID.PROCESS_ACTIVITY or class_uid_val == 1007:
+            elif class_uid_val in (ClassUID.PROCESS_ACTIVITY, 1007):
                 return ProcessActivityEvent(**event_data)
-            elif class_uid_val == ClassUID.FINDING or class_uid_val == 2001:
+            elif class_uid_val in (ClassUID.FINDING, 2001):
                 return FindingEvent(**event_data)
             else:
                 return OCSFBaseEvent(**event_data)

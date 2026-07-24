@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  sentinel-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - SENTINEL_DB_PATH=/app/data/sentinel_ai.db
+      - SENTINEL_HOST=0.0.0.0
+      - SENTINEL_PORT=8000
+    volumes:
+      - sentinel-data:/app/data
+    restart: unless-stopped
+
+volumes:
+  sentinel-data:
