@@ -1,0 +1,16 @@
+{
+  "scenario_name": "Low-Confidence Heuristic Finding",
+  "expected_severity": "LOW",
+  "expected_hitl": false,
+  "expected_action": null,
+  "raw_payload": {
+    "class_uid": 2001,
+    "activity_id": 1,
+    "severity_id": 2,
+    "title": "Unusual DNS Query Volume",
+    "analytic_name": "NDR-HEUR-12",
+    "confidence_score": 0.35,
+    "product_name": "Zeek",
+    "time": 1710000004
+  }
+}

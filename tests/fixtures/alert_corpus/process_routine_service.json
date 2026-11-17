@@ -1,0 +1,15 @@
+{
+  "scenario_name": "Routine Service Start",
+  "expected_severity": "INFORMATIONAL",
+  "expected_hitl": false,
+  "expected_action": null,
+  "raw_payload": {
+    "class_uid": 1007,
+    "activity_id": 1,
+    "severity_id": 1,
+    "process_name": "svchost.exe",
+    "process_pid": 640,
+    "product_name": "Sysmon",
+    "time": 1710000014
+  }
+}

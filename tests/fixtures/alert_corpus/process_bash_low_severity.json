@@ -1,0 +1,16 @@
+{
+  "scenario_name": "Interactive Bash Session (Low Severity)",
+  "expected_severity": "LOW",
+  "expected_hitl": false,
+  "expected_action": null,
+  "raw_payload": {
+    "class_uid": 1007,
+    "activity_id": 1,
+    "severity_id": 2,
+    "process_name": "bash",
+    "process_pid": 812,
+    "device_hostname": "dev-box-04",
+    "product_name": "Falco",
+    "time": 1710000012
+  }
+}

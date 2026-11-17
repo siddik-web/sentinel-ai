@@ -1,0 +1,10 @@
+{
+  "denied_actions": [],
+  "hitl_required_actions": ["ISOLATE_HOST", "REVOKE_CREDENTIALS", "TERMINATE_PROCESS", "BLOCK_IP"],
+  "trusted_ips": ["10.0.0.1"],
+  "agent_allowed_actions": {
+    "triage-agent-01": ["CLASSIFY_SEVERITY", "GENERATE_SUMMARY", "REQUEST_HITL"],
+    "forensic-agent-01": ["ENRICH_IP", "QUERY_ALERT"],
+    "response-agent-01": ["ISOLATE_HOST", "REVOKE_CREDENTIALS", "TERMINATE_PROCESS", "BLOCK_IP"]
+  }
+}

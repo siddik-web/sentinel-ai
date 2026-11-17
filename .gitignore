@@ -7,3 +7,11 @@ __pycache__/
 .venv/
 dist/
 build/
+*.egg-info/
+.coverage
+htmlcov/
+.pytest_cache/
+.ruff_cache/
+*.db
+*.db-journal
+data/

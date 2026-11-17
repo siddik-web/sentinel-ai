@@ -1,0 +1,18 @@
+{
+  "scenario_name": "Data Exfiltration To External Storage",
+  "expected_severity": "CRITICAL",
+  "expected_hitl": true,
+  "expected_action": "ISOLATE_HOST",
+  "raw_payload": {
+    "class_uid": 2001,
+    "activity_id": 1,
+    "severity_id": 5,
+    "title": "Bulk Upload To Unsanctioned Cloud Storage",
+    "analytic_name": "DLP-EXFIL-01",
+    "confidence_score": 0.9,
+    "device_hostname": "wks-eng-31",
+    "remediation_guidance": "Isolate host and revoke tokens",
+    "product_name": "Netskope",
+    "time": 1710000008
+  }
+}

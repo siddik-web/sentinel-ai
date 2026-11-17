@@ -1,4 +1,8 @@
-"""Identity & Access Response Adapter for credential revocation and IP blocking."""
+"""Identity & Access Response Adapter for credential revocation and IP blocking.
+
+This is a reference adapter: it validates and records the action but does not call a real
+identity provider or firewall. Replace ``_dispatch_action`` with vendor API calls.
+"""
 
 from typing import Any
 
@@ -11,7 +15,7 @@ class IdentityResponseAdapter(ResponseAdapter):
     """Adapter for executing identity and perimeter response actions."""
 
     def __init__(
-        self, adapter_id: str = "identity-response-adapter", pep: PolicyEnforcementPoint = None
+        self, adapter_id: str = "identity-response-adapter", pep: PolicyEnforcementPoint | None = None
     ):
         if pep is None:
             raise ValueError("PolicyEnforcementPoint is required for IdentityResponseAdapter.")
@@ -28,8 +32,12 @@ class IdentityResponseAdapter(ResponseAdapter):
                 action_name=action_name,
                 target=str(user),
                 success=True,
-                message=f"User session for '{user}' revoked and account locked via IAM API.",
-                evidence={"user": user, "status": "SESSION_REVOKED_ACCOUNT_LOCKED"},
+                message=f"[SIMULATED] User session for '{user}' revoked and account locked.",
+                evidence={
+                    "user": user,
+                    "status": "SESSION_REVOKED_ACCOUNT_LOCKED",
+                    "simulated": True,
+                },
             )
 
         elif action_name == "BLOCK_IP":
@@ -40,8 +48,8 @@ class IdentityResponseAdapter(ResponseAdapter):
                 action_name=action_name,
                 target=str(ip),
                 success=True,
-                message=f"IP address '{ip}' blocked at perimeter firewall.",
-                evidence={"ip": ip, "status": "DENYLISTED"},
+                message=f"[SIMULATED] IP address '{ip}' blocked at perimeter firewall.",
+                evidence={"ip": ip, "status": "DENYLISTED", "simulated": True},
             )
 
         else:

@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class LLMResponse(BaseModel):
@@ -12,7 +12,9 @@ class LLMResponse(BaseModel):
     content: str
     model_name: str
     structured_json: dict[str, Any] | None = None
-    token_usage: dict[str, int] = {"prompt_tokens": 0, "completion_tokens": 0}
+    token_usage: dict[str, Any] = Field(
+        default_factory=lambda: {"prompt_tokens": 0, "completion_tokens": 0}
+    )
 
 
 class LLMProvider(ABC):

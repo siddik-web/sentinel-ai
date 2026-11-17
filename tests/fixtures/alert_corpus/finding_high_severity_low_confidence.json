@@ -1,0 +1,17 @@
+{
+  "scenario_name": "High-Severity Finding With Weak Signal",
+  "expected_severity": "HIGH",
+  "expected_hitl": true,
+  "expected_action": "ISOLATE_HOST",
+  "raw_payload": {
+    "class_uid": 2001,
+    "activity_id": 1,
+    "severity_id": 4,
+    "title": "Lateral Movement Suspected",
+    "analytic_name": "EDR-BEHAVIORAL",
+    "confidence_score": 0.45,
+    "device_hostname": "srv-app-02",
+    "product_name": "CrowdStrike",
+    "time": 1710000007
+  }
+}

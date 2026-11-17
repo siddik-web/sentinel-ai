@@ -9,6 +9,7 @@ This document is the authoritative reference for setting up the local developmen
 - **Python**: 3.11 or higher
 - **Package Manager**: `pip` (or `uv`)
 - **Git**: 2.30+
+- **Docker** (optional): for the reference deployment
 
 ---
 
@@ -16,7 +17,7 @@ This document is the authoritative reference for setting up the local developmen
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/sentinel-ai/sentinel-ai.git
+   git clone https://github.com/siddik-web/sentinel-ai.git
    cd sentinel-ai
    ```
 
@@ -30,6 +31,22 @@ This document is the authoritative reference for setting up the local developmen
    ```bash
    pip install -e ".[dev]"
    ```
+
+---
+
+## Running the Platform
+
+- **Start the server and web console** (http://127.0.0.1:8000):
+  ```bash
+  sentinel-ai serve
+  ```
+
+- **Run with Docker Compose**:
+  ```bash
+  docker compose up --build
+  ```
+
+Configuration variables, the HTTP API, and the CLI are documented in the [README](../README.md).
 
 ---
 
@@ -47,5 +64,12 @@ This document is the authoritative reference for setting up the local developmen
 
 - **Lint Codebase**:
   ```bash
-  ruff check src/ tests/
+  ruff check .
   ```
+
+- **Run the Behavioral Evaluation Corpus**:
+  ```bash
+  sentinel-ai evaluate tests/fixtures/alert_corpus
+  ```
+
+The same checks run in CI (`.github/workflows/ci.yml`) on every pull request.

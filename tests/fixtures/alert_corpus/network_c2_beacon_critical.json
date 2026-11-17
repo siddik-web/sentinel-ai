@@ -1,0 +1,16 @@
+{
+  "scenario_name": "Command-And-Control Beacon",
+  "expected_severity": "CRITICAL",
+  "expected_hitl": true,
+  "expected_action": "BLOCK_IP",
+  "raw_payload": {
+    "class_uid": 4001,
+    "activity_id": 6,
+    "severity_id": 5,
+    "src_endpoint_ip": "203.0.113.77",
+    "dst_endpoint_ip": "10.0.5.12",
+    "dst_port": 443,
+    "product_name": "Suricata",
+    "time": 1710000015
+  }
+}

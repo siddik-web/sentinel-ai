@@ -28,7 +28,8 @@ def test_authentication_event_creation():
     assert event.category_uid == CategoryUID.IDENTITY_MANAGEMENT
     assert event.user_name == "alice@example.com"
     assert not event.is_success
-    assert event.get_event_id() == "3002:1600000000:OktaInc:1"
+    assert event.get_event_id().startswith("3002:1600000000:OktaInc:1:")
+    assert event.get_event_id() == event.model_copy().get_event_id()
 
 
 def test_webhook_adapter_valid_payload():

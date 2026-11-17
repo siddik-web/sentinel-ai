@@ -2,12 +2,13 @@
 
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from sentinel_ai.agents.base import AgentResponse
 from sentinel_ai.agents.forensic import ForensicAgent
 from sentinel_ai.agents.triage import TriageAgent
 from sentinel_ai.core.ocsf.models import OCSFBaseEvent
+from sentinel_ai.providers.base import LLMProvider
 from sentinel_ai.security.pep import PolicyEnforcementPoint
 
 
@@ -19,15 +20,15 @@ class WorkflowExecutionSummary(BaseModel):
     forensic_response: AgentResponse | None = None
     requires_hitl: bool
     final_recommendation: str
-    suggested_actions: dict[str, Any] = {}
+    suggested_actions: dict[str, Any] = Field(default_factory=dict)
 
 
 class OrchestratorAgent:
     """Orchestrates triage, forensic investigation, and response agent handoffs."""
 
-    def __init__(self, pep: PolicyEnforcementPoint):
+    def __init__(self, pep: PolicyEnforcementPoint, llm_provider: LLMProvider | None = None):
         self.pep = pep
-        self.triage_agent = TriageAgent(pep=pep)
+        self.triage_agent = TriageAgent(pep=pep, llm_provider=llm_provider)
         self.forensic_agent = ForensicAgent(pep=pep)
 
     def process_event_workflow(self, event: OCSFBaseEvent) -> WorkflowExecutionSummary:

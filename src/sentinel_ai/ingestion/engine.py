@@ -3,6 +3,7 @@
 Preserves original OCSF events, handles deduplication, and routes alerts to agent queues.
 """
 
+import time
 from collections.abc import Callable
 
 from sentinel_ai.core.ocsf.models import OCSFBaseEvent
@@ -13,7 +14,7 @@ class IngestionEngine:
 
     def __init__(self, deduplication_window_seconds: int = 300):
         self.deduplication_window_seconds = deduplication_window_seconds
-        self._seen_event_fingerprints: set[str] = set()
+        self._seen_event_fingerprints: dict[str, float] = {}
         self._subscribers: list[Callable[[OCSFBaseEvent], None]] = []
 
     def subscribe(self, handler: Callable[[OCSFBaseEvent], None]) -> None:
@@ -27,12 +28,19 @@ class IngestionEngine:
             bool: True if the event was processed and routed, False if it was deduplicated.
         """
         fingerprint = event.get_event_id()
+        now = time.monotonic()
+
+        # Drop fingerprints that have aged out of the deduplication window
+        cutoff = now - self.deduplication_window_seconds
+        expired = [fp for fp, seen_at in self._seen_event_fingerprints.items() if seen_at <= cutoff]
+        for fp in expired:
+            del self._seen_event_fingerprints[fp]
 
         # Check deduplication
         if fingerprint in self._seen_event_fingerprints:
             return False
 
-        self._seen_event_fingerprints.add(fingerprint)
+        self._seen_event_fingerprints[fingerprint] = now
 
         # Dispatch to all registered subscribers
         for handler in self._subscribers:
