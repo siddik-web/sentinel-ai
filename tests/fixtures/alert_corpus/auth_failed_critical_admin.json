@@ -1,0 +1,16 @@
+{
+  "scenario_name": "Failed Privileged Login Flagged Critical",
+  "expected_severity": "MEDIUM",
+  "expected_hitl": true,
+  "expected_action": "REVOKE_CREDENTIALS",
+  "raw_payload": {
+    "class_uid": 3002,
+    "activity_id": 1,
+    "severity_id": 5,
+    "user_name": "domain_admin",
+    "is_success": false,
+    "src_endpoint_ip": "203.0.113.50",
+    "product_name": "Azure AD",
+    "time": 1710000001
+  }
+}

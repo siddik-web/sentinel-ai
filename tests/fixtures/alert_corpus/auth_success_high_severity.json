@@ -1,0 +1,16 @@
+{
+  "scenario_name": "Successful Login From Unusual Location",
+  "expected_severity": "HIGH",
+  "expected_hitl": false,
+  "expected_action": null,
+  "raw_payload": {
+    "class_uid": 3002,
+    "activity_id": 1,
+    "severity_id": 4,
+    "user_name": "cfo",
+    "is_success": true,
+    "src_endpoint_ip": "198.51.100.7",
+    "product_name": "Okta",
+    "time": 1710000002
+  }
+}

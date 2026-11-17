@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from sentinel_ai.core.ocsf.models import OCSFBaseEvent
 from sentinel_ai.security.pep import PolicyEnforcementPoint
@@ -18,7 +18,8 @@ class AgentResponse(BaseModel):
     severity_assessment: str
     confidence: float
     requires_hitl: bool = False
-    suggested_actions: dict[str, Any] = {}
+    suggested_actions: dict[str, Any] = Field(default_factory=dict)
+    reasoning: str = ""
 
 
 class BaseAgent(ABC):
@@ -39,6 +40,10 @@ class BaseAgent(ABC):
             parameters=parameters,
             hitl_approved=hitl_approved,
         )
+
+    def emit_audit(self, event_type: str, payload: dict[str, Any]) -> None:
+        """Emit a structured event to the audit log writer on behalf of this agent."""
+        self.pep.audit_logger.log_event(event_type=event_type, actor=self.agent_id, payload=payload)
 
     @abstractmethod
     def evaluate_event(self, event: OCSFBaseEvent) -> AgentResponse:

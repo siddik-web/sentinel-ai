@@ -1,0 +1,16 @@
+{
+  "scenario_name": "Unlisted Binary With High Severity",
+  "expected_severity": "HIGH",
+  "expected_hitl": false,
+  "expected_action": null,
+  "raw_payload": {
+    "class_uid": 1007,
+    "activity_id": 1,
+    "severity_id": 4,
+    "process_name": "backup_agent",
+    "process_pid": 990,
+    "device_hostname": "srv-db-02",
+    "product_name": "CrowdStrike",
+    "time": 1710000013
+  }
+}

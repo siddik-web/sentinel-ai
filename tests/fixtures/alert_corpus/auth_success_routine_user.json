@@ -1,0 +1,15 @@
+{
+  "scenario_name": "Routine Interactive Login",
+  "expected_severity": "INFORMATIONAL",
+  "expected_hitl": false,
+  "expected_action": null,
+  "raw_payload": {
+    "class_uid": 3002,
+    "activity_id": 1,
+    "severity_id": 1,
+    "user_name": "a.smith",
+    "is_success": true,
+    "product_name": "Azure AD",
+    "time": 1710000003
+  }
+}

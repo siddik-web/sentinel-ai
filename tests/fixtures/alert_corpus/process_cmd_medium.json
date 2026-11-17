@@ -1,0 +1,17 @@
+{
+  "scenario_name": "Command Shell Spawned By Office Document",
+  "expected_severity": "MEDIUM",
+  "expected_hitl": true,
+  "expected_action": "TERMINATE_PROCESS",
+  "raw_payload": {
+    "class_uid": 1007,
+    "activity_id": 1,
+    "severity_id": 3,
+    "process_name": "CMD.EXE",
+    "process_pid": 2210,
+    "parent_process_name": "winword.exe",
+    "device_hostname": "wks-legal-11",
+    "product_name": "Defender",
+    "time": 1710000011
+  }
+}

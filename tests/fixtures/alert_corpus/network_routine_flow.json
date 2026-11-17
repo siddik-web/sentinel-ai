@@ -1,0 +1,16 @@
+{
+  "scenario_name": "Routine Internal Flow",
+  "expected_severity": "INFORMATIONAL",
+  "expected_hitl": false,
+  "expected_action": null,
+  "raw_payload": {
+    "class_uid": 4001,
+    "activity_id": 6,
+    "severity_id": 1,
+    "src_endpoint_ip": "10.0.1.10",
+    "dst_endpoint_ip": "10.0.1.20",
+    "dst_port": 5432,
+    "product_name": "VPC Flow Logs",
+    "time": 1710000018
+  }
+}

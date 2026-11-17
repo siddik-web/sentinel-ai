@@ -35,6 +35,8 @@ class WebhookAdapter(DataSourceAdapter):
             class_uid_val = raw_payload.get("class_uid")
             if not class_uid_val:
                 raise OCSFValidationError("Missing required 'class_uid' field in payload.")
+            if isinstance(class_uid_val, str) and class_uid_val.isdigit():
+                class_uid_val = int(class_uid_val)
 
             metadata = OCSFMetadata(
                 product_name=raw_payload.get("product_name", "WebhookSource"),
@@ -42,7 +44,7 @@ class WebhookAdapter(DataSourceAdapter):
                 processed_time=int(time.time()),
             )
 
-            event_data = {**raw_payload, "metadata": metadata}
+            event_data = {**raw_payload, "class_uid": class_uid_val, "metadata": metadata}
             if "time" not in event_data:
                 event_data["time"] = int(time.time())
 

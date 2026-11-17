@@ -1,16 +1,22 @@
-version: '3.8'
-
 services:
   sentinel-server:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      # Published on loopback only. To expose the service on the network, change this
+      # mapping AND set SENTINEL_API_TOKEN.
+      - "127.0.0.1:8000:8000"
     environment:
       - SENTINEL_DB_PATH=/app/data/sentinel_ai.db
       - SENTINEL_HOST=0.0.0.0
       - SENTINEL_PORT=8000
+      - SENTINEL_API_TOKEN=${SENTINEL_API_TOKEN:-}
+      - SENTINEL_HITL_WEBHOOK_URL=${SENTINEL_HITL_WEBHOOK_URL:-}
+      - SENTINEL_LLM_PROVIDER=${SENTINEL_LLM_PROVIDER:-none}
+      - SENTINEL_LLM_MODEL=${SENTINEL_LLM_MODEL:-}
+      - SENTINEL_LLM_API_BASE=${SENTINEL_LLM_API_BASE:-}
+      - SENTINEL_LLM_API_KEY=${SENTINEL_LLM_API_KEY:-}
     volumes:
       - sentinel-data:/app/data
     restart: unless-stopped

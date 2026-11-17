@@ -1,0 +1,16 @@
+{
+  "scenario_name": "Inbound Port Scan",
+  "expected_severity": "HIGH",
+  "expected_hitl": true,
+  "expected_action": "BLOCK_IP",
+  "raw_payload": {
+    "class_uid": 4001,
+    "activity_id": 6,
+    "severity_id": 4,
+    "src_endpoint_ip": "198.51.100.23",
+    "dst_endpoint_ip": "10.0.0.5",
+    "protocol": "TCP",
+    "product_name": "Suricata",
+    "time": 1710000016
+  }
+}

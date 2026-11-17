@@ -1,0 +1,17 @@
+{
+  "scenario_name": "High-Confidence Malware Detection",
+  "expected_severity": "MEDIUM",
+  "expected_hitl": true,
+  "expected_action": "ISOLATE_HOST",
+  "raw_payload": {
+    "class_uid": 2001,
+    "activity_id": 1,
+    "severity_id": 3,
+    "title": "Trojan Dropper Detected",
+    "analytic_name": "AV-SIG-9912",
+    "confidence_score": 0.93,
+    "device_hostname": "wks-fin-07",
+    "product_name": "Defender",
+    "time": 1710000006
+  }
+}

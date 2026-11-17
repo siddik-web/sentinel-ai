@@ -3,6 +3,8 @@
 Implements canonical OCSF schema mappings per ADR-001.
 """
 
+import hashlib
+import json
 from enum import IntEnum
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -55,10 +57,20 @@ class OCSFBaseEvent(BaseModel):
     metadata: OCSFMetadata
     message: str | None = None
     raw_data: str | None = None
+    device_hostname: str | None = None
 
     def get_event_id(self) -> str:
-        """Generate a deterministic event fingerprint for deduplication."""
-        return f"{self.class_uid}:{self.time}:{self.metadata.vendor_name}:{self.activity_id}"
+        """Generate a deterministic event fingerprint for deduplication.
+
+        The readable prefix is followed by a digest of the event content, so two distinct
+        events that share a class, timestamp and activity are not mistaken for duplicates.
+        """
+        content = self.model_dump(mode="json", exclude={"metadata", "raw_data"})
+        digest = hashlib.sha256(json.dumps(content, sort_keys=True).encode("utf-8")).hexdigest()
+        return (
+            f"{int(self.class_uid)}:{self.time}:{self.metadata.vendor_name}"
+            f":{self.activity_id}:{digest[:12]}"
+        )
 
 
 class AuthenticationEvent(OCSFBaseEvent):

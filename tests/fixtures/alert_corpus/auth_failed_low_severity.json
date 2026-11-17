@@ -1,0 +1,16 @@
+{
+  "scenario_name": "Single Failed Login (Low Severity)",
+  "expected_severity": "MEDIUM",
+  "expected_hitl": false,
+  "expected_action": null,
+  "raw_payload": {
+    "class_uid": 3002,
+    "activity_id": 1,
+    "severity_id": 2,
+    "user_name": "j.doe",
+    "is_success": false,
+    "src_endpoint_ip": "10.1.4.22",
+    "product_name": "Okta",
+    "time": 1710000000
+  }
+}

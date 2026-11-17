@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sentinel AI — Security Response Console</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-dark: #090d16;
@@ -20,9 +17,9 @@
             --danger: #f43f5e;
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
-            --font-main: 'Inter', sans-serif;
-            --font-heading: 'Outfit', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
+            --font-main: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            --font-heading: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -196,6 +193,38 @@
 
         .btn-approve:hover { opacity: 0.9; }
 
+        .btn-reject {
+            background: transparent;
+            color: var(--danger);
+            border: 1px solid rgba(244, 63, 94, 0.4);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-left: 0.4rem;
+        }
+
+        .btn-plain {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .tag-rejected { background: rgba(244, 63, 94, 0.15); color: var(--danger); border: 1px solid rgba(244, 63, 94, 0.3); }
+        .muted { color: var(--text-muted); font-size: 0.8rem; }
+        .table-wrap { overflow-x: auto; }
+        .status-pill.down { background: rgba(244, 63, 94, 0.1); border-color: rgba(244, 63, 94, 0.3); color: var(--danger); }
+        .status-pill.down .status-dot { background-color: var(--danger); box-shadow: 0 0 8px var(--danger); }
+        .audit-list { max-height: 32rem; overflow-y: auto; }
+        @media (max-width: 640px) {
+            body { padding: 1rem; }
+            header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+        }
+
         .audit-list {
             display: flex;
             flex-direction: column;
@@ -222,12 +251,12 @@
             <div class="logo-badge">S</div>
             <div>
                 <h1>Sentinel AI — Security Response Console</h1>
-                <p style="font-size: 0.8rem; color: var(--text-muted);">Autonomous AI Reasoning & Governed Incident Response Platform</p>
+                <p class="muted">AI-Assisted Triage &amp; Governed Incident Response Platform</p>
             </div>
         </div>
-        <div class="status-pill">
+        <div class="status-pill" id="status-pill">
             <div class="status-dot"></div>
-            PEP & Audit Engine Active
+            <span id="status-text">Connecting…</span>
         </div>
     </header>
 
@@ -245,30 +274,36 @@
             <div class="stat-value" style="color: var(--warning);" id="stat-hitl">0</div>
         </div>
         <div class="stat-card">
+            <div class="stat-label">Policy Denials</div>
+            <div class="stat-value" id="stat-denials">0</div>
+        </div>
+        <div class="stat-card">
             <div class="stat-label">Cryptographic Hash Chain</div>
-            <div class="stat-value" style="color: var(--success);" id="stat-hash">VALID</div>
+            <div class="stat-value" id="stat-hash">—</div>
         </div>
     </div>
 
     <div class="grid-main">
         <div class="section-card">
             <div class="section-title">
-                Active Human-In-The-Loop (HITL) Escalations
-                <button onclick="loadDashboardData()" style="background: transparent; border: 1px solid var(--border-color); color: var(--text-muted); padding: 0.3rem 0.6rem; border-radius: 6px; cursor: pointer;">Refresh</button>
+                Human-In-The-Loop (HITL) Escalations
+                <button class="btn-plain" id="refresh-btn">Refresh</button>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Ticket ID</th>
-                        <th>Target Action</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody id="tickets-body">
-                    <tr><td colspan="4" style="color: var(--text-muted); text-align: center;">Loading HITL tickets...</td></tr>
-                </tbody>
-            </table>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ticket</th>
+                            <th>Proposed Action</th>
+                            <th>Status</th>
+                            <th>Decision</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tickets-body">
+                        <tr><td colspan="4" class="muted" style="text-align: center;">Loading HITL tickets...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="section-card">
@@ -280,77 +315,157 @@
     </div>
 
     <script>
-        async function loadDashboardData() {
-            try {
-                // Load HITL tickets
-                const hitlRes = await fetch('/api/v1/hitl');
-                const hitlData = await hitlRes.json();
-                renderTickets(hitlData.tickets || []);
+        const TOKEN_KEY = 'sentinel_api_token';
 
-                // Load Stats
-                const statsRes = await fetch('/api/v1/stats');
-                const statsData = await statsRes.json();
-                document.getElementById('stat-ingested').innerText = statsData.events_ingested || 0;
-                document.getElementById('stat-triaged').innerText = statsData.alerts_triaged || 0;
-                document.getElementById('stat-hitl').innerText = (hitlData.tickets || []).filter(t => t.status === 'PENDING').length;
+        function getToken() {
+            try { return sessionStorage.getItem(TOKEN_KEY) || ''; } catch (e) { return ''; }
+        }
 
-                // Load Audit Entries
-                const auditRes = await fetch('/api/v1/audit/verify');
-                const auditData = await auditRes.json();
-                renderAudit(auditData);
-            } catch (e) {
-                console.error("Failed to load dashboard data:", e);
+        function setToken(token) {
+            try { sessionStorage.setItem(TOKEN_KEY, token); } catch (e) { /* storage unavailable */ }
+        }
+
+        // All server data is untrusted for display purposes: escape before inserting as HTML.
+        function esc(value) {
+            return String(value === null || value === undefined ? '' : value)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+
+        async function api(path, options) {
+            const opts = options || {};
+            const headers = Object.assign({}, opts.headers || {});
+            const token = getToken();
+            if (token) headers['Authorization'] = 'Bearer ' + token;
+            let res = await fetch(path, Object.assign({}, opts, { headers }));
+            if (res.status === 401) {
+                // Requests run in parallel: only prompt if no other request already got a new token.
+                let current = getToken();
+                if (current === token) {
+                    const entered = window.prompt('This console requires the API token (SENTINEL_API_TOKEN):');
+                    if (!entered) throw new Error('API token required');
+                    current = entered.trim();
+                    setToken(current);
+                }
+                headers['Authorization'] = 'Bearer ' + current;
+                res = await fetch(path, Object.assign({}, opts, { headers }));
             }
+            return res;
+        }
+
+        function setStatus(ok, text) {
+            document.getElementById('status-pill').classList.toggle('down', !ok);
+            document.getElementById('status-text').textContent = text;
+        }
+
+        let loading = false;
+        async function loadDashboardData() {
+            if (loading) return;
+            loading = true;
+            try {
+                const [hitlRes, statsRes, verifyRes, auditRes] = await Promise.all([
+                    api('/api/v1/hitl'), api('/api/v1/stats'),
+                    api('/api/v1/audit/verify'), api('/api/v1/audit?limit=25'),
+                ]);
+                if (![hitlRes, statsRes, verifyRes, auditRes].every(r => r.ok)) {
+                    throw new Error('API request failed');
+                }
+                const tickets = (await hitlRes.json()).tickets || [];
+                const stats = await statsRes.json();
+                renderTickets(tickets);
+                document.getElementById('stat-ingested').textContent = stats.events_ingested || 0;
+                document.getElementById('stat-triaged').textContent = stats.alerts_triaged || 0;
+                document.getElementById('stat-denials').textContent = stats.policy_denials || 0;
+                document.getElementById('stat-hitl').textContent =
+                    tickets.filter(t => t.status === 'PENDING').length;
+                renderAudit(await verifyRes.json(), await auditRes.json());
+                setStatus(true, 'PEP & Audit Engine Active');
+            } catch (e) {
+                setStatus(false, 'Disconnected: ' + e.message);
+            } finally {
+                loading = false;
+            }
+        }
+
+        function tagClass(status) {
+            if (status === 'PENDING') return 'tag-pending';
+            if (status === 'REJECTED') return 'tag-rejected';
+            return 'tag-approved';
         }
 
         function renderTickets(tickets) {
             const tbody = document.getElementById('tickets-body');
             if (tickets.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="4" style="color: var(--text-muted); text-align: center;">No active HITL tickets.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" class="muted" style="text-align: center;">No HITL tickets.</td></tr>';
                 return;
             }
 
-            tbody.innerHTML = tickets.map(t => `
+            tbody.innerHTML = tickets.map(t => {
+                const params = t.parameters || {};
+                const result = t.execution_result;
+                let decision;
+                if (t.status === 'PENDING') {
+                    decision = `<button class="btn-approve" data-decision="approve" data-ticket="${esc(t.ticket_id)}">Approve</button>`
+                        + `<button class="btn-reject" data-decision="reject" data-ticket="${esc(t.ticket_id)}">Reject</button>`;
+                } else {
+                    decision = `<span class="muted">by ${esc(t.decided_by || 'unknown')}</span>`;
+                    if (result) {
+                        decision += `<br><span class="muted" style="color: var(${result.success ? '--success' : '--danger'});">${esc(result.message)}</span>`;
+                    }
+                }
+                return `
                 <tr>
-                    <td style="font-family: var(--font-mono); font-size: 0.8rem;">${t.ticket_id}</td>
-                    <td><strong style="color: var(--primary);">${t.action_name}</strong></td>
-                    <td><span class="tag ${t.status === 'PENDING' ? 'tag-pending' : 'tag-approved'}">${t.status}</span></td>
-                    <td>
-                        ${t.status === 'PENDING' 
-                            ? `<button class="btn-approve" onclick="approveTicket('${t.ticket_id}')">Approve Action</button>`
-                            : '<span style="color: var(--text-muted); font-size: 0.8rem;">Approved</span>'}
-                    </td>
-                </tr>
-            `).join('');
+                    <td style="font-family: var(--font-mono); font-size: 0.8rem; word-break: break-all;">${esc(t.ticket_id)}</td>
+                    <td><strong style="color: var(--primary);">${esc(t.action_name)}</strong><br><span class="muted">${esc(params.reason || '')}</span></td>
+                    <td><span class="tag ${tagClass(t.status)}">${esc(t.status)}</span></td>
+                    <td>${decision}</td>
+                </tr>`;
+            }).join('');
         }
 
-        async function approveTicket(ticketId) {
+        async function decideTicket(ticketId, decision) {
+            const verb = decision === 'approve' ? 'Approve and execute' : 'Reject';
+            if (!window.confirm(`${verb} ticket ${ticketId}?`)) return;
             try {
-                const res = await fetch('/api/v1/hitl/approve', {
+                const res = await api('/api/v1/hitl/' + decision, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ticket_id: ticketId })
+                    body: JSON.stringify({ ticket_id: ticketId, approver: 'console-operator' })
                 });
-                if (res.ok) {
-                    loadDashboardData();
+                if (!res.ok) {
+                    const body = await res.json().catch(() => ({}));
+                    alert('Decision failed: ' + (body.error || res.status));
                 }
             } catch (e) {
-                alert("Approval failed: " + e);
+                alert('Decision failed: ' + e.message);
             }
+            loadDashboardData();
         }
 
-        function renderAudit(auditData) {
+        function renderAudit(verifyData, auditData) {
+            const statEl = document.getElementById('stat-hash');
+            statEl.textContent = verifyData.hash_chain_valid ? 'VALID' : 'INVALID';
+            statEl.style.color = verifyData.hash_chain_valid ? 'var(--success)' : 'var(--danger)';
+
             const container = document.getElementById('audit-body');
-            document.getElementById('stat-hash').innerText = auditData.hash_chain_valid ? 'VALID' : 'INVALID';
-
-            if (!auditData.hash_chain_valid) {
-                document.getElementById('stat-hash').style.color = 'var(--danger)';
-            }
-
-            container.innerHTML = (auditData.total_entries > 0)
-                ? `<div class="audit-item">✔ ${auditData.total_entries} Hash-Chained Audit Entries Verified.<br><span class="hash-str">Integrity Status: OK</span></div>`
-                : '<div class="audit-item">No audit entries logged yet.</div>';
+            const entries = (auditData.entries || []).slice().reverse();
+            let html = verifyData.hash_chain_valid
+                ? `<div class="audit-item">✔ ${esc(verifyData.total_entries)} hash-chained audit entries verified.</div>`
+                : `<div class="audit-item" style="color: var(--danger);">✘ Chain verification failed: ${esc(verifyData.error)}</div>`;
+            html += entries.map(e => `
+                <div class="audit-item">
+                    #${esc(e.entry_index)} <strong>${esc(e.event_type)}</strong> · ${esc(e.actor)}
+                    · ${esc(new Date(e.timestamp * 1000).toLocaleString())}<br>
+                    <span class="hash-str">${esc(e.current_hash.slice(0, 32))}…</span>
+                </div>`).join('');
+            container.innerHTML = html;
         }
+
+        document.getElementById('refresh-btn').addEventListener('click', loadDashboardData);
+        document.getElementById('tickets-body').addEventListener('click', (ev) => {
+            const btn = ev.target.closest('button[data-decision]');
+            if (btn) decideTicket(btn.dataset.ticket, btn.dataset.decision);
+        });
 
         loadDashboardData();
         setInterval(loadDashboardData, 5000);

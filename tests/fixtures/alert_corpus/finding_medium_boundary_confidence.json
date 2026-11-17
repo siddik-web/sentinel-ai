@@ -1,0 +1,16 @@
+{
+  "scenario_name": "Medium Finding At Confidence Boundary",
+  "expected_severity": "MEDIUM",
+  "expected_hitl": false,
+  "expected_action": null,
+  "raw_payload": {
+    "class_uid": 2001,
+    "activity_id": 1,
+    "severity_id": 3,
+    "title": "Possible Credential Dumping",
+    "analytic_name": "EDR-HEUR-04",
+    "confidence_score": 0.8,
+    "product_name": "SentinelOne",
+    "time": 1710000005
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "scenario_name": "Unusual Outbound Volume",
+  "expected_severity": "MEDIUM",
+  "expected_hitl": false,
+  "expected_action": null,
+  "raw_payload": {
+    "class_uid": 4001,
+    "activity_id": 6,
+    "severity_id": 3,
+    "src_endpoint_ip": "10.0.7.40",
+    "dst_endpoint_ip": "192.0.2.10",
+    "bytes_out": 734003200,
+    "product_name": "Zeek",
+    "time": 1710000017
+  }
+}

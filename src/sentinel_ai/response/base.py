@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from sentinel_ai.security.pep import PolicyEnforcementPoint
 
@@ -15,7 +15,7 @@ class ActionExecutionResult(BaseModel):
     target: str
     success: bool
     message: str
-    evidence: dict[str, Any] = {}
+    evidence: dict[str, Any] = Field(default_factory=dict)
 
 
 class ResponseAdapter(ABC):

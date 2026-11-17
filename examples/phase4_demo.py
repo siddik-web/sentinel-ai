@@ -50,7 +50,7 @@ def main():
         print(f"    ✔ Processed Event ID: {res['event_id']}")
     except urllib.error.HTTPError as e:
         print(f"    ✘ HTTP Error {e.code}: {e.fp.read().decode('utf-8')}")
-        raise e
+        raise
 
     # 3. Inspect Stats & Prometheus Telemetry
     print_banner("2. PROMETHEUS TELEMETRY METRICS INSPECTION")

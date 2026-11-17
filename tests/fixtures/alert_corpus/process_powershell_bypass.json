@@ -1,0 +1,17 @@
+{
+  "scenario_name": "PowerShell Execution Policy Bypass",
+  "expected_severity": "HIGH",
+  "expected_hitl": true,
+  "expected_action": "TERMINATE_PROCESS",
+  "raw_payload": {
+    "class_uid": 1007,
+    "activity_id": 1,
+    "severity_id": 4,
+    "process_name": "powershell.exe",
+    "process_pid": 4096,
+    "command_line": "powershell.exe -ExecutionPolicy Bypass -enc SQBFAFgA",
+    "device_hostname": "wks-hr-03",
+    "product_name": "CrowdStrike",
+    "time": 1710000009
+  }
+}

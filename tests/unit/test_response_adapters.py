@@ -22,7 +22,8 @@ def test_edr_response_adapter_host_isolation():
     )
     assert res.success is True
     assert res.target == "host-prod-42"
-    assert "isolated successfully" in res.message
+    assert "isolated" in res.message
+    assert res.evidence["simulated"] is True
 
 
 def test_edr_response_adapter_process_termination():
